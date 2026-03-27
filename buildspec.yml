@@ -1,0 +1,23 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.12
+    commands:
+      - echo "Installing dependencies..."
+      - pip install -r requirements.txt
+  pre_build:
+    commands:
+      - echo "Running pre-build tasks..."
+      - python src/features.py
+  build:
+    commands:
+      - echo "Running training pipeline and generating the model..."
+      - python src/train.py
+  post_build:
+    commands:
+      - echo "Build completed successfully."
+artifacts:
+  files:
+    - '**/*'

@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life Expectancy AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --surface-color: rgba(30, 41, 59, 0.7);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --primary-color: #3b82f6;
+            --primary-hover: #2563eb;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --glass-blur: blur(12px);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.2) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(147, 51, 234, 0.2) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            width: 100%;
+            padding: 2rem 0;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            margin: 0;
+            background: linear-gradient(135deg, #60a5fa, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        main {
+            width: 90%;
+            max-width: 900px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            padding-bottom: 3rem;
+        }
+
+        .glass-panel {
+            background: var(--surface-color);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-transform: capitalize;
+        }
+
+        input, select {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
+        .btn-predict {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            padding: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-predict:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -10px rgba(59, 130, 246, 0.5);
+        }
+
+        .btn-predict:active {
+            transform: translateY(0);
+        }
+        
+        .loader {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .result-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .result-panel::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 60%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .result-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .result-title {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .result-value {
+            font-size: 4rem;
+            font-weight: 700;
+            color: white;
+            margin: 0;
+            line-height: 1.1;
+            text-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .result-unit {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+        }
+
+        .pill {
+            margin-top: 1rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            background: rgba(34, 197, 94, 0.2);
+            color: #4ade80;
+            font-size: 0.85rem;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        @media (max-width: 768px) {
+            main {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Life Expectancy Predictor</h1>
+        <p class="subtitle">Desarrollado para el Equipo 4 - Ingeniería de Datos</p>
+    </header>
+
+    <main>
+        <section class="glass-panel">
+            <form id="prediction-form" class="form-grid">
+                <div class="input-group">
+                    <label>Country</label>
+                    <input type="text" id="Country" value="Afghanistan" required>
+                </div>
+                <div class="input-group">
+                    <label>Year</label>
+                    <input type="number" id="Year" value="2015" required>
+                </div>
+                <div class="input-group">
+                    <label>Status</label>
+                    <select id="Status">
+                        <option value="Developing" selected>Developing</option>
+                        <option value="Developed">Developed</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Adult Mortality</label>
+                    <input type="number" step="any" id="Adult Mortality" value="263.0" required>
+                </div>
+                <div class="input-group">
+                    <label>Infant Deaths</label>
+                    <input type="number" id="infant deaths" value="62" required>
+                </div>
+                <div class="input-group">
+                    <label>Alcohol</label>
+                    <input type="number" step="any" id="Alcohol" value="0.01" required>
+                </div>
+                <div class="input-group">
+                    <label>% Expenditure</label>
+                    <input type="number" step="any" id="percentage expenditure" value="71.27" required>
+                </div>
+                <div class="input-group">
+                    <label>Hepatitis B</label>
+                    <input type="number" step="any" id="Hepatitis B" value="65.0" required>
+                </div>
+                <div class="input-group">
+                    <label>Measles</label>
+                    <input type="number" step="any" id="Measles" value="1154" required>
+                </div>
+                <div class="input-group">
+                    <label>BMI</label>
+                    <input type="number" step="any" id="BMI" value="19.1" required>
+                </div>
+                <div class="input-group">
+                    <label>Under 5 Deaths</label>
+                    <input type="number" id="under-five deaths" value="83" required>
+                </div>
+                <div class="input-group">
+                    <label>Polio</label>
+                    <input type="number" step="any" id="Polio" value="6.0" required>
+                </div>
+                <div class="input-group">
+                    <label>Total Expenditure</label>
+                    <input type="number" step="any" id="Total expenditure" value="8.16" required>
+                </div>
+                <div class="input-group">
+                    <label>Diphtheria</label>
+                    <input type="number" step="any" id="Diphtheria" value="65.0" required>
+                </div>
+                <div class="input-group">
+                    <label>HIV / AIDS</label>
+                    <input type="number" step="any" id="HIV/AIDS" value="0.1" required>
+                </div>
+                <div class="input-group">
+                    <label>GDP</label>
+                    <input type="number" step="any" id="GDP" value="584.25" required>
+                </div>
+                <div class="input-group">
+                    <label>Population</label>
+                    <input type="number" step="any" id="Population" value="33736494.0" required>
+                </div>
+                <div class="input-group">
+                    <label>Thinness 1-19 yrs</label>
+                    <input type="number" step="any" id=" thinness  1-19 years" value="17.2" required>
+                </div>
+                <div class="input-group">
+                    <label>Thinness 5-9 yrs</label>
+                    <input type="number" step="any" id=" thinness 5-9 years" value="17.3" required>
+                </div>
+                <div class="input-group">
+                    <label>Income Comp. of Resources</label>
+                    <input type="number" step="any" id="Income composition of resources" value="0.479" required>
+                </div>
+                <div class="input-group">
+                    <label>Schooling</label>
+                    <input type="number" step="any" id="Schooling" value="10.1" required>
+                </div>
+
+                <button type="submit" class="btn-predict">
+                    <span>Generar Predicción IA</span>
+                    <div class="loader" id="loader"></div>
+                </button>
+            </form>
+        </section>
+
+        <section class="glass-panel result-panel">
+            <div class="result-content">
+                <div class="result-title">Life Expectancy</div>
+                <div class="result-value" id="result-display">--.-</div>
+                <div class="result-unit">Años</div>
+                <div class="pill" id="pill-status">Model Ready</div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.getElementById('prediction-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const loader = document.getElementById('loader');
+            const resultDisplay = document.getElementById('result-display');
+            const pillStatus = document.getElementById('pill-status');
+            const btnText = document.querySelector('.btn-predict span');
+            
+            loader.style.display = 'block';
+            btnText.style.display = 'none';
+
+            // Gather all data into a JSON object matching the API keys
+            const inputs = document.querySelectorAll('#prediction-form input, #prediction-form select');
+            let payload = {};
+            
+            inputs.forEach(input => {
+                let val = input.value;
+                // Try converting numbers
+                if(input.type === 'number') {
+                    val = parseFloat(val);
+                }
+                payload[input.id] = val;
+            });
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                const jsonResponse = await response.json();
+                
+                if(response.ok) {
+                    // Start counting animation for cool effect
+                    let finalVal = jsonResponse.prediction.toFixed(1);
+                    animateValue(resultDisplay, 0, finalVal, 800);
+                    
+                    pillStatus.textContent = "Consulta Exitosa";
+                    pillStatus.style.background = "rgba(34, 197, 94, 0.2)";
+                    pillStatus.style.color = "#4ade80";
+                    pillStatus.style.opacity = "1";
+                } else {
+                    resultDisplay.textContent = "Error";
+                    pillStatus.textContent = jsonResponse.error || "Datos Inválidos";
+                    pillStatus.style.background = "rgba(239, 68, 68, 0.2)";
+                    pillStatus.style.color = "#f87171";
+                    pillStatus.style.opacity = "1";
+                }
+            } catch (error) {
+                resultDisplay.textContent = "Error";
+            } finally {
+                loader.style.display = 'none';
+                btnText.style.display = 'block';
+            }
+        });
+
+        // Simple counter animation to build suspense
+        function animateValue(obj, start, end, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                obj.innerHTML = (progress * (end - start) + start).toFixed(1);
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+    </script>
+</body>
+</html>

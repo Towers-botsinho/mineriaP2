@@ -29,11 +29,17 @@ class LifeExpectancyPredictor:
         # Clean column names exactly as in load_and_clean_data
         df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_').str.replace('-', '_')
         
+        # Force correct types. If a column is passed as [None] (from JSON null), 
+        # pandas infers it as 'object'. This breaks the numeric_features selector later.
+        for col in df.columns:
+            if col not in ['country', 'status']:
+                df[col] = pd.to_numeric(df[col], errors='coerce')
+        
         # We assume the missing values are already handled or we impute them here 
-        # (for a real API, we should require all fields or impute them)
-        # To make it simple, we do basic imputation if missing
         numeric_cols = df.select_dtypes(include=['number']).columns
-        df[numeric_cols] = df[numeric_cols].fillna(0) # naive fill for API missing keys
+        # We'll use naive fill for API missing keys, though the model's SimpleImputer might also handle NaN.
+        # But our simple impute to 0 is what was here before. Let's keep it robust.
+        df[numeric_cols] = df[numeric_cols].fillna(0)
         
         # Apply strict data types for categories if present
         if 'country' in df.columns:

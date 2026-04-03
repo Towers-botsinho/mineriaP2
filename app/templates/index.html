@@ -111,6 +111,18 @@
             box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
         }
 
+        input[readonly] {
+            background: rgba(15, 23, 42, 0.3);
+            color: var(--text-muted);
+            cursor: not-allowed;
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        input[readonly]:focus {
+            border-color: rgba(255, 255, 255, 0.05);
+            box-shadow: none;
+        }
+
         .btn-predict {
             grid-column: 1 / -1;
             background: linear-gradient(135deg, #3b82f6, #2563eb);
@@ -221,7 +233,7 @@
 
     <header>
         <h1>Life Expectancy Predictor</h1>
-        <p class="subtitle">Desarrollado para el Equipo 4 - Ingeniería de Datos</p>
+        <p class="subtitle">AI-Powered Health Analytics</p>
     </header>
 
     <main>
@@ -229,94 +241,95 @@
             <form id="prediction-form" class="form-grid">
                 <div class="input-group">
                     <label>Country</label>
-                    <input type="text" id="Country" value="Afghanistan" required>
-                </div>
-                <div class="input-group">
-                    <label>Year</label>
-                    <input type="number" id="Year" value="2015" required>
-                </div>
-                <div class="input-group">
-                    <label>Status</label>
-                    <select id="Status">
-                        <option value="Developing" selected>Developing</option>
-                        <option value="Developed">Developed</option>
+                    <select id="Country" required>
+                        <option value="" disabled selected>Cargando...</option>
                     </select>
                 </div>
                 <div class="input-group">
+                    <label>Year</label>
+                    <select id="Year" required>
+                        <option value="" disabled selected>Elige un país primero</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Status</label>
+                    <input type="text" id="Status" value="" required readonly>
+                </div>
+                <div class="input-group">
                     <label>Adult Mortality</label>
-                    <input type="number" step="any" id="Adult Mortality" value="263.0" required>
+                    <input type="number" step="any" id="Adult Mortality" value="" required readonly>
                 </div>
                 <div class="input-group">
                     <label>Infant Deaths</label>
-                    <input type="number" id="infant deaths" value="62" required>
+                    <input type="number" id="infant deaths" value="" required readonly>
                 </div>
                 <div class="input-group">
                     <label>Alcohol</label>
-                    <input type="number" step="any" id="Alcohol" value="0.01" required>
+                    <input type="number" step="any" id="Alcohol" value="" required readonly>
                 </div>
                 <div class="input-group">
                     <label>% Expenditure</label>
-                    <input type="number" step="any" id="percentage expenditure" value="71.27" required>
+                    <input type="number" step="any" id="percentage expenditure" value="" required readonly>
                 </div>
                 <div class="input-group">
                     <label>Hepatitis B</label>
-                    <input type="number" step="any" id="Hepatitis B" value="65.0" required>
+                    <input type="number" step="any" id="Hepatitis B" value="" required readonly>
                 </div>
                 <div class="input-group">
                     <label>Measles</label>
-                    <input type="number" step="any" id="Measles" value="1154" required>
+                    <input type="number" step="any" id="Measles" value="" required readonly>
                 </div>
                 <div class="input-group">
                     <label>BMI</label>
-                    <input type="number" step="any" id="BMI" value="19.1" required>
+                    <input type="number" step="any" id="BMI" value="" required readonly>
                 </div>
                 <div class="input-group">
                     <label>Under 5 Deaths</label>
-                    <input type="number" id="under-five deaths" value="83" required>
+                    <input type="number" id="under-five deaths" value="" required readonly>
                 </div>
                 <div class="input-group">
                     <label>Polio</label>
-                    <input type="number" step="any" id="Polio" value="6.0" required>
+                    <input type="number" step="any" id="Polio" value="" required readonly>
                 </div>
                 <div class="input-group">
                     <label>Total Expenditure</label>
-                    <input type="number" step="any" id="Total expenditure" value="8.16" required>
+                    <input type="number" step="any" id="Total expenditure" value="" required readonly>
                 </div>
                 <div class="input-group">
                     <label>Diphtheria</label>
-                    <input type="number" step="any" id="Diphtheria" value="65.0" required>
+                    <input type="number" step="any" id="Diphtheria" value="" required readonly>
                 </div>
                 <div class="input-group">
                     <label>HIV / AIDS</label>
-                    <input type="number" step="any" id="HIV/AIDS" value="0.1" required>
+                    <input type="number" step="any" id="HIV/AIDS" value="" required readonly>
                 </div>
                 <div class="input-group">
                     <label>GDP</label>
-                    <input type="number" step="any" id="GDP" value="584.25" required>
+                    <input type="number" step="any" id="GDP" value="" required readonly>
                 </div>
                 <div class="input-group">
                     <label>Population</label>
-                    <input type="number" step="any" id="Population" value="33736494.0" required>
+                    <input type="number" step="any" id="Population" value="" required readonly>
                 </div>
                 <div class="input-group">
                     <label>Thinness 1-19 yrs</label>
-                    <input type="number" step="any" id=" thinness  1-19 years" value="17.2" required>
+                    <input type="number" step="any" id=" thinness  1-19 years" value="" required readonly>
                 </div>
                 <div class="input-group">
                     <label>Thinness 5-9 yrs</label>
-                    <input type="number" step="any" id=" thinness 5-9 years" value="17.3" required>
+                    <input type="number" step="any" id=" thinness 5-9 years" value="" required readonly>
                 </div>
                 <div class="input-group">
                     <label>Income Comp. of Resources</label>
-                    <input type="number" step="any" id="Income composition of resources" value="0.479" required>
+                    <input type="number" step="any" id="Income composition of resources" value="" required readonly>
                 </div>
                 <div class="input-group">
                     <label>Schooling</label>
-                    <input type="number" step="any" id="Schooling" value="10.1" required>
+                    <input type="number" step="any" id="Schooling" value="" required readonly>
                 </div>
 
-                <button type="submit" class="btn-predict">
-                    <span>Generar Predicción IA</span>
+                <button type="submit" class="btn-predict" id="predict-btn">
+                    <span>Calcular Esperanza de Vida</span>
                     <div class="loader" id="loader"></div>
                 </button>
             </form>
@@ -333,6 +346,69 @@
     </main>
 
     <script>
+        const countrySelect = document.getElementById('Country');
+        const yearSelect = document.getElementById('Year');
+
+        // Fetch initialization
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const res = await fetch('/api/countries');
+                const countries = await res.json();
+                
+                countrySelect.innerHTML = '<option value="" disabled selected>Selecciona un país</option>';
+                countries.forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value = c; opt.textContent = c;
+                    countrySelect.appendChild(opt);
+                });
+            } catch (err) {
+                console.error("Error loading countries:", err);
+            }
+        });
+
+        // Load Years when Country changes
+        countrySelect.addEventListener('change', async () => {
+            yearSelect.innerHTML = '<option value="" disabled selected>Cargando...</option>';
+            const country = countrySelect.value;
+            try {
+                const res = await fetch(`/api/years?country=${encodeURIComponent(country)}`);
+                const years = await res.json();
+                
+                yearSelect.innerHTML = '<option value="" disabled selected>Selecciona el año</option>';
+                years.forEach(y => {
+                    const opt = document.createElement('option');
+                    opt.value = y; opt.textContent = y;
+                    yearSelect.appendChild(opt);
+                });
+            } catch (err) {
+                console.error("Error loading years:", err);
+            }
+        });
+
+        // Load Stats when Year changes
+        yearSelect.addEventListener('change', async () => {
+            const country = countrySelect.value;
+            const year = yearSelect.value;
+            if(!country || !year) return;
+
+            // Clear inputs first 
+            document.querySelectorAll('#prediction-form input[readonly]').forEach(inp => inp.value = '');
+
+            try {
+                const res = await fetch(`/api/stats?country=${encodeURIComponent(country)}&year=${encodeURIComponent(year)}`);
+                const stats = await res.json();
+                
+                for(let key in stats) {
+                    const el = document.getElementById(key);
+                    if(el) {
+                        el.value = stats[key];
+                    }
+                }
+            } catch (err) {
+                console.error("Error loading stats:", err);
+            }
+        });
+
         document.getElementById('prediction-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -344,15 +420,16 @@
             loader.style.display = 'block';
             btnText.style.display = 'none';
 
-            // Gather all data into a JSON object matching the API keys
+            // Check if there are any empty required fields right before sending
             const inputs = document.querySelectorAll('#prediction-form input, #prediction-form select');
             let payload = {};
             
+            // Build payload payload[input.id]
             inputs.forEach(input => {
                 let val = input.value;
-                // Try converting numbers
                 if(input.type === 'number') {
-                    val = parseFloat(val);
+                    // if empty, leave as empty string or we can pass null
+                    val = val === "" ? null : parseFloat(val);
                 }
                 payload[input.id] = val;
             });
@@ -369,7 +446,6 @@
                 const jsonResponse = await response.json();
                 
                 if(response.ok) {
-                    // Start counting animation for cool effect
                     let finalVal = jsonResponse.prediction.toFixed(1);
                     animateValue(resultDisplay, 0, finalVal, 800);
                     

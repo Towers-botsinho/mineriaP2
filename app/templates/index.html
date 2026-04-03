@@ -427,7 +427,7 @@
             // Build payload payload[input.id]
             inputs.forEach(input => {
                 let val = input.value;
-                if(input.type === 'number') {
+                if(input.type === 'number' || input.id === 'Year') {
                     // if empty, leave as empty string or we can pass null
                     val = val === "" ? null : parseFloat(val);
                 }

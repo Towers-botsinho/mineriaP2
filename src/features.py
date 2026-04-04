@@ -29,9 +29,14 @@ def create_derived_features(df):
     """
     df = df.copy()
     # Example 1: infant deaths ratio = infant deaths / under-five deaths
-    # (Handling division by zero)
+    # Prevent division by zero explosion when under_five_deaths is 0 (e.g. from missing imputation)
     if 'infant_deaths' in df.columns and 'under_five_deaths' in df.columns:
-        df['infant_to_under_five_ratio'] = df['infant_deaths'] / (df['under_five_deaths'] + 1e-9)
+        # If under_five_deaths is exactly 0, ratio should be 0 to avoid massive numbers
+        df['infant_to_under_five_ratio'] = np.where(
+            df['under_five_deaths'] <= 0,
+            0.0,
+            df['infant_deaths'] / df['under_five_deaths']
+        )
         
     # Example 2: total_health_expenditure_approx = gdp * (percentage_expenditure/100)
     # This is a rough proxy if GDP is per capita
